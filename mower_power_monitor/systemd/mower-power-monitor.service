@@ -1,0 +1,25 @@
+# /etc/systemd/system/mower-power-monitor.service
+#
+# Starts the power monitor node automatically at Raspberry Pi boot.
+# This service is intentionally independent from start_mower.sh / mapping / navigation.
+#
+# Replace /home/base/dev_ws if your workspace path is different.
+# Replace /dev/mower_power_arduino if you use another stable serial symlink.
+
+[Unit]
+Description=Mower power Arduino ROS 2 monitor
+After=multi-user.target
+Wants=multi-user.target
+
+[Service]
+Type=simple
+User=root
+Environment=ROS_DOMAIN_ID=0
+ExecStart=/bin/bash -lc 'source /opt/ros/jazzy/setup.bash && source /home/base/dev_ws/install/setup.bash && ros2 run mower_control_ros2 power_monitor_node --ros-args -p serial_port:=/dev/mower_power_arduino -p baudrate:=115200 -p auto_shutdown:=true -p power_cut_grace_ms:=90000 -p shutdown_command:="/sbin/shutdown -h now"'
+Restart=always
+RestartSec=2
+KillSignal=SIGINT
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target

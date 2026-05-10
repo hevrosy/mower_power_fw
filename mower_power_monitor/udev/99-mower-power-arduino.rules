@@ -1,0 +1,10 @@
+# /etc/udev/rules.d/99-mower-power-arduino.rules
+#
+# Example for many Arduino Nano CH340 boards.
+# Check your real values with:
+#   udevadm info -a -n /dev/ttyUSB1 | grep -E 'idVendor|idProduct|serial'
+#
+# If your motor Arduino is also CH340 with the same IDs, prefer matching by ATTRS{serial}
+# if the adapter exposes a unique serial number.
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="7523", SYMLINK+="mower_power_arduino", MODE="0666"

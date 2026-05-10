@@ -96,7 +96,7 @@ const unsigned long buttonHoldReportMs    = 500;
 
 const unsigned long normalShutdownGraceMs = 30000;
 const unsigned long minShutdownGraceMs    = 5000;
-const unsigned long maxShutdownGraceMs    = 30000;
+const unsigned long maxShutdownGraceMs    = 180000;
 
 const unsigned long lowVoltageConfirmMs   = 1800;
 const unsigned long overCurrentConfirmMs  = 180;

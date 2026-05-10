@@ -8,18 +8,25 @@
 
 [Unit]
 Description=Mower power Arduino ROS 2 monitor
-After=multi-user.target
-Wants=multi-user.target
+After=network.target
+Wants=network.target
 
 [Service]
 Type=simple
-User=root
+WorkingDirectory=/home/rbt/dev_ws
+
+Environment=HOME=/root
+Environment=ROS_HOME=/root/.ros
+Environment=ROS_LOG_DIR=/var/log/ros/mower_power_monitor
 Environment=ROS_DOMAIN_ID=0
-ExecStart=/bin/bash -lc 'source /opt/ros/jazzy/setup.bash && source /home/base/dev_ws/install/setup.bash && ros2 run mower_control_ros2 power_monitor_node --ros-args -p serial_port:=/dev/mower_power_arduino -p baudrate:=115200 -p auto_shutdown:=true -p power_cut_grace_ms:=90000 -p shutdown_command:="/sbin/shutdown -h now"'
+Environment=RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+Environment=FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/bin/bash -lc "source /opt/ros/jazzy/setup.bash && source /home/rbt/dev_ws/install/setup.bash && exec ros2 run mower_control_ros2 power_monitor_node --ros-args -p serial_port:=/dev/serial/by-path/platform-xhci-hcd.1-usb-0:1:1.0-port0 -p baudrate:=115200 -p auto_shutdown:=true -p power_cut_grace_ms:=30000 -p shutdown_command:='/usr/sbin/shutdown -h now'"
+
 Restart=always
 RestartSec=2
-KillSignal=SIGINT
-TimeoutStopSec=5
 
 [Install]
 WantedBy=multi-user.target

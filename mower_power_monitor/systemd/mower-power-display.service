@@ -1,0 +1,23 @@
+[Unit]
+Description=Mower GC9A01 power display ROS 2 node
+After=network.target mower-power-monitor.service
+Wants=mower-power-monitor.service
+
+[Service]
+Type=simple
+User=rbt
+Group=rbt
+WorkingDirectory=/home/rbt/dev_ws
+
+Environment=ROS_DOMAIN_ID=0
+Environment=RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+Environment=FASTDDS_BUILTIN_TRANSPORTS=UDPv4
+Environment=PYTHONUNBUFFERED=1
+
+ExecStart=/bin/bash -lc "source /opt/ros/jazzy/setup.bash && source /home/rbt/dev_ws/install/setup.bash && exec ros2 run mower_control_ros2 power_display_node.py --ros-args -p demo_mode:=false -p enabled:=true -p gpiochip:=-1 -p spi_device:=0 -p spi_speed_hz:=8000000 -p startup_test:=false -p dc_pin:=25 -p rst_pin:=27 -p bl_pin:=18 -p battery_full_voltage:=21.0 -p battery_cutoff_voltage:=16.5 -p battery_capacity_wh:=200.0"
+
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
